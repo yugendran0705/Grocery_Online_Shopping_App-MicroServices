@@ -22,7 +22,7 @@ class ProductService {
 
     getProducts = async () => {
         try {
-            const products = await this.productRepository.getProducts();
+            const products = await this.productRepository.products();
             return formatData(products);
         } catch (err) {
             if (err instanceof DefinedError) {
@@ -61,7 +61,7 @@ class ProductService {
 
     getSelectedProducts = async (productIds) => {
         try {
-            const products = await this.productRepository.FindSelectedProducts(productIds);
+            const products = await this.productRepository.FindSelected(productIds);
             return formatData(products);
         }
         catch (err) {
@@ -89,14 +89,14 @@ class ProductService {
         }
     }
 
-    getProductPayload = async (userId, { productId, qty }, event) => {
+    getProductPayload = async (_id, { productId, qty }, event) => {
         try {
             const product = await this.productRepository.FindById(productId);
             if (product) {
                 const payload = {
                     event: event,
                     data: {
-                        userId,
+                        _id,
                         product,
                         qty
                     }

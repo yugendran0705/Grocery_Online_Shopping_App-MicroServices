@@ -1,7 +1,7 @@
 const { CustomerService } = require('../services/customer-service');
 const service = new CustomerService();
 
-const signup = async (req, res, next) => {
+const signup = async (req, res) => {
     try {
         const { name, email, password, phone } = req.body
         if (!email || !password || !phone || !name) {

@@ -158,15 +158,15 @@ class CustomerService {
         const { _id, product, order, qty } = data;
         switch (event) {
             case 'ADD_TO_CART':
-                return await this.manageCart({ _id, product, quantity: qty, isRemove: false });
+                return await this.manageCart(_id, product, qty, false);
             case 'REMOVE_FROM_CART':
-                return await this.manageCart({ _id, product, quantity: qty, isRemove: true });
+                return await this.manageCart(_id, product, qty, true);
             case 'ADD_TO_ORDER':
-                return await this.manageOrder({ _id, order });
+                return await this.manageOrder(_id, order);
             case 'ADD_TO_WISHLIST':
-                return await this.addToWishlist({ _id, product_id: product });
-            case 'REMOVE_TO_WISHLIST':
-                return await this.addToWishlist({ _id, product_id: product });
+                return await this.addToWishlist(_id, product);
+            case 'REMOVE_FROM_WISHLIST':
+                return await this.addToWishlist(_id, product);
             default:
                 return formatData(null);
         }

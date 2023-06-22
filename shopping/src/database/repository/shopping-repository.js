@@ -1,13 +1,13 @@
 const { DefinedError } = require('../../utils/error-handler');
 const OrderModel = require('../models/Order');
-const CustomerModel = require('../models/Customer');
+const CartModel = require('../models/Cart');
 
 const { v4: uuidv4 } = require('uuid');
 
 class ShoppingRepository {
-    orders = async ({ _id }) => {
+    orders = async (_id) => {
         try {
-            const orders = await OrderModel.find({ customer: _id });
+            const orders = await OrderModel.find({ customerId: _id })
             return orders;
         }
         catch (err) {
@@ -15,33 +15,94 @@ class ShoppingRepository {
         }
     }
 
-    createNewOrder = async ({ customer_id, TnxId }) => {
+    cart = async (_id) => {
         try {
-            const profile = await CustomerModel.findById(customer_id).populate('cart.product');
-            if (!profile) {
-                throw new DefinedError("Customer not found", 404)
+            const cart = await CartModel.find({ customerId: _id })
+            if (!cart) {
+                throw new DefinedError("Cart not found", 404)
+            }
+            return cart;
+        }
+        catch (err) {
+            throw new DefinedError("Error finding cart", 500)
+        }
+    }
+
+    addCartItem = async (customer_id, item, qty, isRemove) => {
+        try {
+            const cart = await CartModel.findOne({ customerId: customer_id });
+            const { _id } = item;
+            if (cart) {
+                let isExist = false;
+                let CartItem = cart.items;
+                if (CartItem === undefined) {
+                    CartItem = [];
+                }
+                if (CartItem.length > 0) {
+                    CartItem.map((item) => {
+                        if (item.product._id.toString() === _id.toString()) {
+                            if (isRemove) {
+                                const index = CartItem.indexOf(item);
+                                CartItem.splice(index, 1)
+                            } else {
+                                item.unit = qty;
+                            }
+                            isExist = true;
+                        }
+                    })
+                }
+                if (!isExist && !isRemove) {
+                    CartItem.push({ product: { ...item }, unit: qty });
+                }
+                cart.items = CartItem;
+                const updatedCart = await cart.save();
+                return updatedCart.items;
             }
             else {
-                var amount = 0;
-                profile.cart.forEach(element => {
-                    amount = amount + element.product.price;
-                }
-                );
-                const order = new OrderModel({
-                    order_id: uuidv4(),
-                    customer: customer_id,
-                    amount: amount,
-                    status: "Pending",
-                    tnxId: TnxId,
-                    items: profile.cart
+                return await CartModel.create({
+                    customerId: customer_id,
+                    items: [{ product: { ...item }, unit: qty }]
                 });
+            }
+        }
+        catch (err) {
+            if (err instanceof DefinedError) {
+                throw err;
+            }
+            else {
+                throw new DefinedError("Error adding to cart", 500)
+            }
+        }
+    }
 
-                profile.cart = [];
-                order.populate('items.product');
-                const order_save = await order.save();
-                profile.orders.push(order_save);
-                await profile.save();
-                return order_save;
+    createNewOrder = async (customer_id, TnxId) => {
+        try {
+            const cart = await CartModel.findOne({ customerId: customer_id });
+            if (cart) {
+                let amount = 0;
+                let cartItems = cart.items;
+
+                if (cartItems.length > 0) {
+                    cartItems.map((item) => {
+                        amount += parseInt(item.product.price) * parseInt(item.unit);
+                    })
+                    const order = new OrderModel({
+                        order_id: uuidv4(),
+                        customer: customer_id,
+                        amount: amount,
+                        status: "Pending",
+                        tnxId: TnxId,
+                        items: profile.cart
+                    });
+
+                    cart.items = [];
+                    const order_save = await order.save();
+                    await cart.save();
+                    return order_save;
+                }
+                else {
+                    return null;
+                }
             }
         }
         catch (err) {

@@ -137,6 +137,7 @@ class CustomerRepository {
         }
     }
 
+    //cart
     addCartItems = async (customer_id, { _id, name, price, available, banner }, qty, isRemove) => {
         try {
             const product = { _id, name, price, available, banner }
@@ -154,8 +155,12 @@ class CustomerRepository {
                     let isExist = false;
                     cart.map((item) => {
                         if (item.product._id.toString() === product._id.toString()) {
-                            const index = cart.indexOf(item);
-                            cart.splice(index, 1);
+                            if (isRemove) {
+                                const index = cart.indexOf(item);
+                                cart.splice(index, 1)
+                            } else {
+                                item.unit = qty;
+                            }
                             isExist = true;
                         }
                     });

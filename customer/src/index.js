@@ -12,7 +12,6 @@ const service = new CustomerService();
 app.use('/app-events', async (req, res) => {
     const { payload } = req.body;
     service.subscribeEvents(payload);
-
     console.log("Event received");
     res.status(200).json(payload);
 });

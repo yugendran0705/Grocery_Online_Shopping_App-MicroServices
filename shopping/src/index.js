@@ -1,15 +1,19 @@
 const express = require('express');
 const app = express();
 const { port } = require('./config/index');
-const { connect } = require('./database/connection');
-const productRoutes = require('./routes/products');
-const customerRoutes = require('./routes/customer');
+const { connect } = require('./database/connection')
 const shoppingRoutes = require('./routes/shopping');
+const { ShoppingService } = require('./services/shopping-service');
 
 app.use(express.json());
-app.use('/api/products', productRoutes);
-app.use('/api/customer', customerRoutes);
-app.use('/api/shopping', shoppingRoutes);
+app.use('/', shoppingRoutes);
+
+const service = new ShoppingService();
+app.use('/app-events', async (req, res) => {
+    const { payload } = req.body;
+    service.subscribeEvents(payload);
+    res.status(200).json(payload);
+});
 
 app.listen(port, async () => {
     console.log(`Server started on port ${port}`);

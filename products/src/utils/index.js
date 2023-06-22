@@ -37,11 +37,11 @@ formatData = (data) => {
 }
 
 publishCustomerEvent = async (payload) => {
-    axios.post("http://localhost:8000/customer/app-events", { payload });
+    return axios.post("http://localhost:8000/customer/app-events", { payload });
 }
 
 publishShoppingEvent = async (payload) => {
-    axios.post("http://localhost:8000/shopping/app-events", { payload });
+    return axios.post("http://localhost:8000/shopping/app-events", { payload });
 }
 
 module.exports = {
