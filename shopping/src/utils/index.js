@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { DefinedError } = require('./error-handler');
 const { jwtSecret } = require('../config/index');
+const axios = require('axios');
 
 generateSalt = async () => {
     return await bcrypt.genSalt(10);
