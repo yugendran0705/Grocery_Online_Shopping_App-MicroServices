@@ -46,27 +46,27 @@ class ShoppingService {
         }
     }
 
-    manageCart = async (customer_id, item, qty, isRemove) => {
+    manageCart = async (customer_id, item, quantity, isRemove) => {
         try {
-            const cart = await this.Repository.addCartItem(customer_id, item, qty, isRemove);
+            const cart = await this.Repository.addCartItem(customer_id, item, quantity, isRemove);
             return cart;
         } catch (err) {
             if (err instanceof DefinedError) {
                 throw err;
             } else {
-                throw new DefinedError("Error managing cart", 500);
+                throw err
             }
         }
     }
 
     subscribeEvent = async (payload) => {
         const { event, data } = payload;
-        const { _id, product, qty } = data;
+        const { _id, product, quantity } = data;
         switch (event) {
             case "ADD_TO_CART":
-                return await this.manageCart(_id, product, qty);
+                return await this.manageCart(_id, product, quantity, false);
             case "REMOVE_FROM_CART":
-                return await this.manageCart(_id, product, qty, true);
+                return await this.manageCart(_id, product, quantity, true);
             case "PLACE_ORDER":
                 return await this.placeOrder(_id, order);
             default:
