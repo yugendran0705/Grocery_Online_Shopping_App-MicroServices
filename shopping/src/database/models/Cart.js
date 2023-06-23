@@ -9,14 +9,15 @@ const cartSchema = new Schema({
     items: [
         {
             product: {
-                name: String,
-                desc: String,
-                banner: String,
-                type: String,
-                unit: Number,
-                price: Number,
-                available: Boolean,
-                suplier: String
+                _id: { type: String, required: true },
+                name: { type: String, required: true },
+                desc: { type: String, required: true },
+                type: { type: String, required: true },
+                unit: { type: Number, required: true },
+                price: { type: Number, required: true },
+                banner: { type: String, required: true },
+                available: { type: Boolean, required: true },
+                suplier: { type: String, required: true }
             },
             unit: {
                 type: Number,
