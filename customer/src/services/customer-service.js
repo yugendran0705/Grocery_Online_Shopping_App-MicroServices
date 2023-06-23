@@ -95,8 +95,8 @@ class CustomerService {
 
     getWishlist = async (_id) => {
         try {
-            const customerwishlist = await this.customerRepository.findCustomer(_id);
-            return formatData(customerwishlist);
+            const customerwishlist = await this.customerRepository.findCustomerById(_id);
+            return formatData(customerwishlist.wishlist);
         }
         catch (err) {
             if (err instanceof DefinedError) {
@@ -125,6 +125,7 @@ class CustomerService {
 
     manageCart = async (_id, product, quantity, isRemove) => {
         try {
+            console.log("manageCart", _id, product, quantity, isRemove);
             const cart = await this.customerRepository.addCartItems(_id, product, quantity, isRemove);
             return formatData(cart);
         }
@@ -155,12 +156,12 @@ class CustomerService {
 
     subscribeEvents = async (payload) => {
         const { event, data } = payload;
-        const { _id, product, order, qty } = data;
+        const { _id, product, order, quantity } = data;
         switch (event) {
             case 'ADD_TO_CART':
-                return await this.manageCart(_id, product, qty, false);
+                return await this.manageCart(_id, product, quantity, false);
             case 'REMOVE_FROM_CART':
-                return await this.manageCart(_id, product, qty, true);
+                return await this.manageCart(_id, product, quantity, true);
             case 'ADD_TO_ORDER':
                 return await this.manageOrder(_id, order);
             case 'ADD_TO_WISHLIST':
@@ -168,7 +169,7 @@ class CustomerService {
             case 'REMOVE_FROM_WISHLIST':
                 return await this.addToWishlist(_id, product);
             default:
-                return formatData(null);
+                return formatData({ "message": "Event not found" });
         }
     }
 

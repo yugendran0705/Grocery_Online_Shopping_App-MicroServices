@@ -9,7 +9,7 @@ const signup = async (req, res) => {
             return
         }
         const customer = await service.signUp(name, email, password, phone);
-        res.status(200).json({ customer });
+        res.status(201).json({ customer });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
@@ -39,14 +39,14 @@ const addNewAddress = async (req, res, next) => {
             return
         }
         const address = await service.addNewAddress(_id, street, postalcode, city, country);
-        res.status(200).json({ address });
+        res.status(201).json({ address });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
     }
 }
 
-const getCustomer = async (req, res, next) => {
+const getCustomer = async (req, res) => {
     try {
         const { _id } = req.body
         if (!_id) {
@@ -61,7 +61,7 @@ const getCustomer = async (req, res, next) => {
     }
 }
 
-const getCustomerOrders = async (req, res, next) => {
+const getCustomerOrders = async (req, res) => {
     try {
         const { _id } = req.body
         if (!_id) {
@@ -77,7 +77,7 @@ const getCustomerOrders = async (req, res, next) => {
     }
 }
 
-const getCustomerWishlist = async (req, res, next) => {
+const getCustomerWishlist = async (req, res) => {
     try {
         const { _id } = req.body
         if (!_id) {

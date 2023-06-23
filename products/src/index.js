@@ -1,17 +1,14 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const { port } = require('./config/index');
 const { connect } = require('./database/connection');
 const productRoutes = require('./routes/products');
 
 app.use(express.json());
+app.use(cors());
 app.use('/', productRoutes);
-app.use('/app-events', async (req, res, next) => {
-    const { payload } = req.body;
-    console.log("Product Received event");
-    res.status(200).json(payload);
-    return;
-});
+
 
 app.listen(port, async () => {
     console.log(`Server started on port ${port}`);

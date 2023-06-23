@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { DefinedError } = require('./error-handler');
+const { DefinedError } = require('../utils/error-handler');
 const { jwtSecret } = require('../config/index');
 
 generateSalt = async () => {
@@ -32,7 +32,7 @@ formatData = (data) => {
         return data;
     }
     else {
-        return DefinedError("Data not found", 404);
+        throw new DefinedError("Data not found", 404);
     }
 }
 

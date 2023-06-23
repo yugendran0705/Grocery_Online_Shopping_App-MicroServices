@@ -14,13 +14,18 @@ const createProduct = async (req, res) => {
         res.status(200).json(product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
 const byCatogery = async (req, res) => {
+    console.log("byCatogery");
     try {
-        const { type } = req.params.type;
+        const { type } = req.params;
         if (!type) {
             res.status(400).json({ message: "Type is required" });
             return
@@ -29,13 +34,18 @@ const byCatogery = async (req, res) => {
         res.status(200).json(product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
 const byId = async (req, res) => {
+    console.log("byId");
     try {
-        const _id = req.params.id;
+        const _id = req.params;
         if (!_id) {
             res.status(400).json({ message: "Id is required" });
             return
@@ -44,7 +54,11 @@ const byId = async (req, res) => {
         res.status(200).json(product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -59,40 +73,53 @@ const manyById = async (req, res) => {
         res.status(200).json({ products });
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
-const addToWishlist = async (req, res, next) => {
+const addToWishlist = async (req, res) => {
     try {
+        console.log("addToWishlist");
         const { customerId, productId } = req.body;
         if (!customerId || !productId) {
             res.status(400).json({ message: "Customer id and product id are required" });
             return
         }
-        const { data_recieved } = await service.getProductPayload(customerId, { productId: productId }, "ADD_TO_WISHLIST");
-        const wishlist = await publishCustomerEvent(data_recieved);
-        res.status(200).json(wishlist);
+        const data_recieved = await service.getProductPayload(customerId, { productId: productId }, "ADD_TO_WISHLIST");
+        await publishCustomerEvent(data_recieved);
+        res.status(200).json(data_recieved.data.product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
-const deleteFromWishlist = async (req, res, next) => {
+const deleteFromWishlist = async (req, res) => {
     try {
         const { customerId } = req.body;
-        const { productId } = req.params;
-        if (!customerId || !productId) {
+        const { id } = req.params;
+        if (!customerId || !id) {
             res.status(400).json({ message: "Customer id and product id are required" });
             return
         }
-        const { data_recieved } = await service.getProductPayload(customerId, { productId: productId }, "REMOVE_FROM_WISHLIST");
-        const wishlist = await publishCustomerEvent(data_recieved);
-        res.status(200).json(wishlist);
+        const data_recieved = await service.getProductPayload(customerId, { productId: id }, "REMOVE_FROM_WISHLIST");
+        await publishCustomerEvent(data_recieved);
+        res.status(200).json(data_recieved.data.product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -103,29 +130,39 @@ const addToCart = async (req, res) => {
             res.status(400).json({ message: "Customer id, product id and quantity are required" });
             return
         }
-        const { data_recieved } = await service.getProductPayload(customerId, { productId: productId, quantity: quantity }, "ADD_TO_CART");
-        const cart = await publishCustomerEvent(data_recieved);
-        res.status(200).json(cart);
+        const data_recieved = await service.getProductPayload(customerId, { productId: productId, quantity: quantity }, "ADD_TO_CART");
+        await publishCustomerEvent(data_recieved);
+        await publishShoppingEvent(data_recieved);
+        res.status(200).json(data_recieved.data.product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
 const deleteFromCart = async (req, res, next) => {
     try {
         const { customerId } = req.body;
-        const { productId } = req.params;
-        if (!customerId || !productId) {
+        const { id } = req.params;
+        if (!customerId || !id) {
             res.status(400).json({ message: "Customer id and product id are required" });
             return
         }
-        const { data_recieved } = await service.getProductPayload(customerId, { productId: productId }, "REMOVE_FROM_CART");
-        const cart = await publishCustomerEvent(data_recieved);
-        res.status(200).json(cart);
+        const data_recieved = await service.getProductPayload(customerId, { productId: id }, "REMOVE_FROM_CART");
+        await publishCustomerEvent(data_recieved);
+        await publishShoppingEvent(data_recieved);
+        res.status(200).json(data_recieved.data.product);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -135,7 +172,11 @@ const getProducts = async (req, res) => {
         res.status(200).json(products);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 

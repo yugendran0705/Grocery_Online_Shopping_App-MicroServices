@@ -124,8 +124,8 @@ class CustomerRepository {
                 }
                 customer.wishlist = wishlist;
             }
-            await customer.save();
-            return customer.wishlist;
+            const profileResult = await customer.save();
+            return profileResult.wishlist;
         }
         catch (err) {
             if (err instanceof DefinedError) {
@@ -138,9 +138,8 @@ class CustomerRepository {
     }
 
     //cart
-    addCartItems = async (customer_id, { _id, name, price, available, banner }, qty, isRemove) => {
+    addCartItems = async (customer_id, { _id, name, price, available, banner }, quantity, isRemove) => {
         try {
-            const product = { _id, name, price, available, banner }
             const customer = await CustomerModel.findById(customer_id).populate('cart');
             if (!customer) {
                 throw new DefinedError("Customer not found", 404)
@@ -148,18 +147,21 @@ class CustomerRepository {
             else {
                 const cartItem = {
                     product: { _id, name, price, available, banner },
-                    unit: qty
+                    unit: quantity
                 }
                 let cart = customer.cart;
                 if (cart.length > 0) {
                     let isExist = false;
                     cart.map((item) => {
-                        if (item.product._id.toString() === product._id.toString()) {
+                        console.log(item.product._id.toString());
+                        console.log(_id.toString());
+                        if (item.product._id.toString() === _id.toString()) {
+                            console.log("inside if");
                             if (isRemove) {
                                 const index = cart.indexOf(item);
                                 cart.splice(index, 1)
                             } else {
-                                item.unit = qty;
+                                item.unit = quantity;
                             }
                             isExist = true;
                         }
@@ -172,8 +174,10 @@ class CustomerRepository {
                     cart.push(cartItem);
                 }
                 customer.cart = cart;
+                console.log("customer.cart");
+                console.log(customer.cart);
                 const updatedCustomer = await customer.save();
-                return updatedCustomer.cart;
+                return customer.cart;
             }
         }
         catch (err) {

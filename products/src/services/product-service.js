@@ -49,7 +49,7 @@ class ProductService {
     getProductByCategory = async (category) => {
         try {
             const product = await this.productRepository.FindByCatogery(category);
-            return formatData(product);
+            return formatData({ product });
         } catch (err) {
             if (err instanceof DefinedError) {
                 throw err;
@@ -89,8 +89,9 @@ class ProductService {
         }
     }
 
-    getProductPayload = async (_id, { productId, qty }, event) => {
+    getProductPayload = async (_id, { productId, quantity }, event) => {
         try {
+            console.log("getProductPayload");
             const product = await this.productRepository.FindById(productId);
             if (product) {
                 const payload = {
@@ -98,7 +99,7 @@ class ProductService {
                     data: {
                         _id,
                         product,
-                        qty
+                        quantity
                     }
                 }
                 return formatData(payload);

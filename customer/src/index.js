@@ -1,19 +1,25 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const { port } = require('./config/index');
 const { connect } = require('./database/connection');
 const customerRoutes = require('./routes/customer');
 const { CustomerService } = require('./services/customer-service');
+const { formatData } = require('./utils');
 
 app.use(express.json());
+app.use(cors());
 app.use('/', customerRoutes);
 
 const service = new CustomerService();
-app.use('/app-events', async (req, res) => {
+app.use('/customer/app-events', async (req, res) => {
+    console.log("app-events in customer");
     const { payload } = req.body;
-    service.subscribeEvents(payload);
-    console.log("Event received");
-    res.status(200).json(payload);
+    console.log(payload);
+    await service.subscribeEvents(payload);
+    console.log("after subscribeEvents");
+    res.json(payload);
+
 });
 
 

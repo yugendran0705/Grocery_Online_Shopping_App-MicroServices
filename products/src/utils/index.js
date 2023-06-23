@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { DefinedError } = require('./error-handler');
 const { jwtSecret } = require('../config/index');
+const axios = require('axios');
 
 generateSalt = async () => {
     return await bcrypt.genSalt(10);
@@ -37,11 +38,11 @@ formatData = (data) => {
 }
 
 publishCustomerEvent = async (payload) => {
-    return axios.post("http://localhost:8000/customer/app-events", { payload });
+    await axios.post("http://localhost:8001/customer/app-events", { payload: payload });
 }
 
-publishShoppingEvent = async (payload) => {
-    return axios.post("http://localhost:8000/shopping/app-events", { payload });
+publishShoppingEvent = async (pay) => {
+    return axios.post("http://localhost:8003/shopping/app-events", { payload: pay });
 }
 
 module.exports = {
