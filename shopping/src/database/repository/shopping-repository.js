@@ -28,10 +28,9 @@ class ShoppingRepository {
         }
     }
 
-    addCartItem = async (customer_id, item, qty, isRemove) => {
+    addCartItem = async (customer_id, { _id, name, desc, banner, type, unit, price, available, suplier }, quantity, isRemove) => {
         try {
             const cart = await CartModel.findOne({ customerId: customer_id });
-            const { _id } = item;
             if (cart) {
                 let isExist = false;
                 let CartItem = cart.items;
@@ -45,23 +44,24 @@ class ShoppingRepository {
                                 const index = CartItem.indexOf(item);
                                 CartItem.splice(index, 1)
                             } else {
-                                item.unit = qty;
+                                item.unit = quantity;
                             }
                             isExist = true;
                         }
                     })
                 }
                 if (!isExist && !isRemove) {
-                    CartItem.push({ product: { ...item }, unit: qty });
+                    CartItem.push({ product: { _id, name, desc, type, unit, price, banner, available, suplier }, unit: quantity });
                 }
                 cart.items = CartItem;
                 const updatedCart = await cart.save();
                 return updatedCart.items;
             }
             else {
-                return await CartModel.create({
+                console.log("inside else")
+                await CartModel.create({
                     customerId: customer_id,
-                    items: [{ product: { ...item }, unit: qty }]
+                    items: [{ product: { _id, name, desc, type, unit, price, banner, available, suplier }, unit: quantity }]
                 });
             }
         }
@@ -70,7 +70,7 @@ class ShoppingRepository {
                 throw err;
             }
             else {
-                throw new DefinedError("Error adding to cart", 500)
+                throw err
             }
         }
     }
