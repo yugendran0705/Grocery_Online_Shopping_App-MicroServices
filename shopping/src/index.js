@@ -1,18 +1,21 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const { port } = require('./config/index');
 const { connect } = require('./database/connection')
 const shoppingRoutes = require('./routes/shopping');
 const { ShoppingService } = require('./services/shopping-service');
 
 app.use(express.json());
+app.use(cors());
 app.use('/', shoppingRoutes);
 
 const service = new ShoppingService();
-app.use('/app-events', async (req, res) => {
+app.use('/shopping/app-events', async (req, res) => {
     const { payload } = req.body;
-    service.subscribeEvents(payload);
-    res.status(200).json(payload);
+    console.log(payload);
+    await service.subscribeEvent(payload);
+    res.json(payload);
 });
 
 app.listen(port, async () => {
