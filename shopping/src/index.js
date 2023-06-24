@@ -13,7 +13,6 @@ app.use('/', shoppingRoutes);
 const service = new ShoppingService();
 app.use('/shopping/app-events', async (req, res) => {
     const { payload } = req.body;
-    console.log(payload);
     await service.subscribeEvent(payload);
     res.json(payload);
 });
