@@ -22,7 +22,6 @@ generateToken = async (payload) => {
 
 verifyToken = async (req) => {
     const signature = req.get("Authorization");
-    console.log(signature);
     const payload = jwt.verify(signature.split(" ")[1], jwtSecret);
     req.user = payload;
     return true;
@@ -42,7 +41,7 @@ publishCustomerEvent = async (payload) => {
 }
 
 publishShoppingEvent = async (pay) => {
-    return axios.post("http://localhost:8003/shopping/app-events", { payload: pay });
+    await axios.post("http://localhost:8003/shopping/app-events", { payload: pay });
 }
 
 module.exports = {
