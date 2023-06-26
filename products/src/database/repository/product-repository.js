@@ -35,7 +35,6 @@ class ProductRepository {
 
     FindById = async (_id) => {
         try {
-            console.log("FindById");
             const product = await ProductModel.findById(_id);
             if (!product) {
                 throw new DefinedError("Product not found", 404)

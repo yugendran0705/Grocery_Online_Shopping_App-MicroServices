@@ -23,7 +23,6 @@ const createProduct = async (req, res) => {
 }
 
 const byCatogery = async (req, res) => {
-    console.log("byCatogery");
     try {
         const { type } = req.params;
         if (!type) {
@@ -43,7 +42,6 @@ const byCatogery = async (req, res) => {
 }
 
 const byId = async (req, res) => {
-    console.log("byId");
     try {
         const _id = req.params;
         if (!_id) {
@@ -83,7 +81,6 @@ const manyById = async (req, res) => {
 
 const addToWishlist = async (req, res) => {
     try {
-        console.log("addToWishlist");
         const { customerId, productId } = req.body;
         if (!customerId || !productId) {
             res.status(400).json({ message: "Customer id and product id are required" });
