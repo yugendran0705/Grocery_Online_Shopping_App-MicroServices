@@ -21,7 +21,6 @@ generateToken = async (payload) => {
 
 verifyToken = async (req) => {
     const signature = req.get("Authorization");
-    console.log(signature);
     const payload = jwt.verify(signature.split(" ")[1], jwtSecret);
     req.user = payload;
     return true;

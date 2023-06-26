@@ -9,6 +9,9 @@ class CustomerService {
 
     signIn = async (email, password) => {
         try {
+            if (!email || !password) {
+                throw new DefinedError("Email and password missing", 404);
+            }
             const customer = await this.customerRepository.findCustomer(email);
             if (customer) {
                 const validPassword = await validatePassword(password, customer.password, customer.salt);
@@ -32,6 +35,9 @@ class CustomerService {
 
     signUp = async (name, email, password, phone) => {
         try {
+            if (!name || !email || !password || !phone) {
+                throw new DefinedError("Name, email, password and phone missing", 404);
+            }
             const salt = await generateSalt();
             const hash = await generatePassword(password, salt);
             const customer = await this.customerRepository.createCustomer(name, email, hash, phone, salt);
@@ -50,6 +56,9 @@ class CustomerService {
 
     addNewAddress = async (_id, street, postalcode, city, country) => {
         try {
+            if (!_id || !street || !postalcode || !city || !country) {
+                throw new DefinedError("customer id, street, postalcode, city and country missing", 404);
+            }
             const address = await this.customerRepository.createAddress(_id, street, postalcode, city, country);
             return formatData(address);
         }
@@ -65,6 +74,9 @@ class CustomerService {
 
     getCustomer = async (_id) => {
         try {
+            if (!_id) {
+                throw new DefinedError("customer id missing", 404);
+            }
             const customerDetails = await this.customerRepository.findCustomerById(_id);
             return formatData(customerDetails);
         }
@@ -80,6 +92,9 @@ class CustomerService {
 
     getShoppingDetails = async (_id) => {
         try {
+            if (!_id) {
+                throw new DefinedError("customer id missing", 404);
+            }
             const customerDetails = await this.customerRepository.findCustomer(_id);
             return formatData(customerDetails);
         }
@@ -95,6 +110,9 @@ class CustomerService {
 
     getWishlist = async (_id) => {
         try {
+            if (!_id) {
+                throw new DefinedError("customer id missing", 404);
+            }
             const customerwishlist = await this.customerRepository.findCustomerById(_id);
             return formatData(customerwishlist.wishlist);
         }
@@ -110,6 +128,9 @@ class CustomerService {
 
     addToWishlist = async (_id, product) => {
         try {
+            if (!_id || !product) {
+                throw new DefinedError("customer id and product missing", 404);
+            }
             const wishlist = await this.customerRepository.addToWishlist(_id, product);
             return formatData(wishlist);
         }
@@ -125,7 +146,9 @@ class CustomerService {
 
     manageCart = async (_id, product, quantity, isRemove) => {
         try {
-            console.log("manageCart", _id, product, quantity, isRemove);
+            if (!_id || !product) {
+                throw new DefinedError("customer id, product and quantity missing", 404);
+            }
             const cart = await this.customerRepository.addCartItems(_id, product, quantity, isRemove);
             return formatData(cart);
         }
@@ -141,6 +164,9 @@ class CustomerService {
 
     manageOrder = async (_id, order) => {
         try {
+            if (!_id || !order) {
+                throw new DefinedError("customer id and order missing", 404);
+            }
             const customerOrder = await this.customerRepository.addOrderToProfile(_id, order);
             return formatData(customerOrder);
         }
