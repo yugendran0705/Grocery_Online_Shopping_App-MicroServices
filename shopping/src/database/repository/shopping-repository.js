@@ -70,7 +70,7 @@ class ShoppingRepository {
                 throw err;
             }
             else {
-                throw err
+                throw new DefinedError("Error adding item to cart", 500)
             }
         }
     }
@@ -81,18 +81,17 @@ class ShoppingRepository {
             if (cart) {
                 let amount = 0;
                 let cartItems = cart.items;
-
                 if (cartItems.length > 0) {
                     cartItems.map((item) => {
                         amount += parseInt(item.product.price) * parseInt(item.unit);
                     })
                     const order = new OrderModel({
                         order_id: uuidv4(),
-                        customer: customer_id,
+                        customerId: customer_id,
                         amount: amount,
                         status: "Pending",
                         tnxId: TnxId,
-                        items: profile.cart
+                        items: cartItems
                     });
 
                     cart.items = [];

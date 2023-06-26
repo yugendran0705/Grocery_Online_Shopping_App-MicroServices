@@ -1,6 +1,7 @@
 const { ShoppingService } = require('../services/shopping-service');
 const service = new ShoppingService();
 const { publishCustomerEvent, publishProductEvent } = require('../utils/index');
+const { DefinedError } = require('../utils/error-handler')
 
 const createOrder = async (req, res) => {
     try {
@@ -10,12 +11,18 @@ const createOrder = async (req, res) => {
             return
         }
         const order = await service.placeOrder(_id, txn_id);
+
         const payload = await service.getOrderPayload(_id, order, "ADD_TO_ORDER");
         await publishCustomerEvent(payload);
         res.status(200).json(order);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
+
     }
 }
 
@@ -30,7 +37,11 @@ const getOrderDetails = async (req, res) => {
         res.status(200).json(orders);
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -45,7 +56,11 @@ const getCartDetails = async (req, res, next) => {
         res.status(200).json({ cart });
     }
     catch (err) {
-        res.status(err.statusCode).json({ message: err.message });
+        if (err instanceof DefinedError) {
+            res.status(err.statusCode).json({ message: err.message });
+            return
+        }
+        res.status(500).json({ message: err.message });
     }
 }
 

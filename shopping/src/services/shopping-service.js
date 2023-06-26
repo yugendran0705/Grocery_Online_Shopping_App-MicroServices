@@ -9,6 +9,9 @@ class ShoppingService {
 
     getCart = async (customer_id) => {
         try {
+            if (!customer_id) {
+                throw new DefinedError("Customer id missing", 404);
+            }
             const cart = await this.Repository.cart(customer_id);
             return cart;
         } catch (err) {
@@ -22,6 +25,9 @@ class ShoppingService {
 
     placeOrder = async (customer_id, TnxId) => {
         try {
+            if (!customer_id || !TnxId) {
+                throw new DefinedError("Customer id or transaction id missing", 404);
+            }
             const order = await this.Repository.createNewOrder(customer_id, TnxId);
             return order;
         } catch (err) {
@@ -35,6 +41,9 @@ class ShoppingService {
 
     getOrders = async (customer_id) => {
         try {
+            if (!customer_id) {
+                throw new DefinedError("Customer id missing", 404);
+            }
             const orders = await this.Repository.orders(customer_id);
             return orders;
         } catch (err) {
@@ -48,13 +57,16 @@ class ShoppingService {
 
     manageCart = async (customer_id, item, quantity, isRemove) => {
         try {
+            if (!customer_id || !item) {
+                throw new DefinedError("Customer id, item and quantity missing", 404);
+            }
             const cart = await this.Repository.addCartItem(customer_id, item, quantity, isRemove);
             return cart;
         } catch (err) {
             if (err instanceof DefinedError) {
                 throw err;
             } else {
-                throw err
+                throw new DefinedError("Error managing cart", 500);
             }
         }
     }

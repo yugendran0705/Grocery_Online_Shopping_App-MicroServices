@@ -35,7 +35,7 @@ const orderSchema = new Schema({
                 available: Boolean,
                 suplier: String
             },
-            quantity: {
+            unit: {
                 type: Number,
                 required: true
             }

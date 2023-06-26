@@ -38,11 +38,11 @@ formatData = (data) => {
 }
 
 publishCustomerEvent = async (payload) => {
-    return axios.post("http://localhost:8000/customer/app-events", { payload });
+    await axios.post("http://localhost:8000/customer/app-events", { payload });
 }
 
 publishShoppingEvent = async (payload) => {
-    return axios.post("http://localhost:8000/shopping/app-events", { payload });
+    await axios.post("http://localhost:8000/shopping/app-events", { payload });
 }
 
 
