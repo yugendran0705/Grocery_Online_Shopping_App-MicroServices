@@ -11,12 +11,19 @@ app.use(cors());
 app.use('/', customerRoutes);
 
 const service = new CustomerService();
-app.use('/customer/app-events', async (req, res) => {
+app.use('/app-events', async (req, res) => {
     const { payload } = req.body;
     await service.subscribeEvents(payload);
     res.json(payload);
 
 });
+
+app.use('/customer/app-events', async (req, res) => {
+    const { payload } = req.body;
+    await service.subscribeEvents(payload);
+    res.json(payload);
+});
+
 
 
 app.listen(port, async () => {

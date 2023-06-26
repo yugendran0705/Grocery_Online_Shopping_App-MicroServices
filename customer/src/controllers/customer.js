@@ -16,7 +16,7 @@ const signup = async (req, res) => {
     }
 }
 
-const signin = async (req, res, next) => {
+const signin = async (req, res) => {
     try {
         const { email, password } = req.body
         if (!email || !password) {
@@ -31,7 +31,7 @@ const signin = async (req, res, next) => {
     }
 }
 
-const addNewAddress = async (req, res, next) => {
+const addNewAddress = async (req, res) => {
     try {
         const { _id, street, postalcode, city, country } = req.body
         if (!_id || !street || !postalcode || !city || !country) {

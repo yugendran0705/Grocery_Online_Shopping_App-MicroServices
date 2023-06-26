@@ -26,7 +26,6 @@ class CustomerRepository {
     createAddress = async (_id, street, postalcode, city, country) => {
         try {
             const customer = await CustomerModel.findById(_id);
-            console.log(customer);
             if (!customer) {
                 throw new DefinedError("Customer not found", 404)
             }
@@ -153,10 +152,7 @@ class CustomerRepository {
                 if (cart.length > 0) {
                     let isExist = false;
                     cart.map((item) => {
-                        console.log(item.product._id.toString());
-                        console.log(_id.toString());
                         if (item.product._id.toString() === _id.toString()) {
-                            console.log("inside if");
                             if (isRemove) {
                                 const index = cart.indexOf(item);
                                 cart.splice(index, 1)
@@ -174,8 +170,6 @@ class CustomerRepository {
                     cart.push(cartItem);
                 }
                 customer.cart = cart;
-                console.log("customer.cart");
-                console.log(customer.cart);
                 const updatedCustomer = await customer.save();
                 return customer.cart;
             }
