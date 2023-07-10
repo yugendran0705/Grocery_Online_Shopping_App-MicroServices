@@ -8,6 +8,10 @@ const { publishMessage } = require('../utils/index')
 module.exports = async (app, channel) => {
     const service = new ShoppingService();
     await subscribeMessage(channel, service)
+
+    app.get('/', async (req, res) => {
+        res.status(200).json({ message: "Welcome to shopping service" });
+    });
     app.post('/order', validateToken, async (req, res) => {
         try {
             const { _id, txn_id } = req.body

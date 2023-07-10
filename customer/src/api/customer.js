@@ -6,6 +6,10 @@ module.exports = (app, channel) => {
     const service = new CustomerService();
     subscribeMessage(channel, service);
 
+    app.get('/', async (req, res) => {
+        res.status(200).json({ message: "Welcome to customer service" });
+    });
+
     app.post('/signup', async (req, res) => {
         try {
             const { name, email, password, phone } = req.body

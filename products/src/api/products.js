@@ -6,6 +6,10 @@ const { CUSTOMER_BINDING_KEY, SHOPPING_BINDING_KEY } = require('../config/index'
 const { validateToken } = require('../middlewares/auth');
 
 module.exports = (app, channel) => {
+
+    app.get('/', async (req, res) => {
+        res.status(200).json({ message: "Welcome to products service" });
+    });
     app.post('/create', validateToken, async (req, res) => {
         try {
             const { name, desc, type, unit, price, available, suplier, banner } = req.body;
