@@ -3,10 +3,11 @@ services:
   nosql-db:
     image: mongo
     ports:
-      - "27017:27017"
+      - "27018:27017"
     container_name: nosql-db
     volumes:
-      - ./db/:/data/db
+      - /usr/db
+
   products:
     build:
       dockerfile: Dockerfile
@@ -18,11 +19,12 @@ services:
     depends_on:
       - "nosql-db"
     volumes:
-      - .:/app
-      - /app/products/node_modules
+      - /usr/src/app
+      - /usr/src/app/node_modules
 
     env_file:
       - ./products/.env
+
   shopping:
     build:
       dockerfile: Dockerfile
@@ -34,10 +36,11 @@ services:
     depends_on:
       - "nosql-db"
     volumes:
-      - .:/app
-      - /app/shopping/node_modules
+      - /usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./shopping/.env
+
   customer:
     build:
       dockerfile: Dockerfile
@@ -48,12 +51,12 @@ services:
     restart: always
     depends_on:
       - "nosql-db"
-
     volumes:
-      - .:/app/
-      - /app/customer/node_modules
+      - /usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./customer/.env
+
   nginx-proxy:
     build:
       dockerfile: Dockerfile
