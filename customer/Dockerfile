@@ -1,12 +1,12 @@
-FROM node
+FROM node:latest
 
 WORKDIR /app/customer
 
 COPY package.json .
 
-RUN npm install
+COPY src .
 
-COPY . .
+RUN npm install
 
 EXPOSE 8001
 

@@ -1,6 +1,7 @@
 const { CustomerService } = require('../services/customer-service');
 const { subscribeMessage } = require('../utils/index');
 const { validateToken } = require('../middlewares/auth');
+const { DefinedError } = require('../utils/error-handler');
 
 module.exports = (app, channel) => {
     const service = new CustomerService();

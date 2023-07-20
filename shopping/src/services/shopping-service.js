@@ -1,4 +1,4 @@
-const { formatData } = require('../../../products/src/utils');
+const { formatData } = require('../utils/index');
 const { ShoppingRepository } = require('../database/repository/shopping-repository');
 const { DefinedError } = require('../utils/error-handler');
 
