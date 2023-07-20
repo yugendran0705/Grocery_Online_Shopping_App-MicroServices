@@ -181,8 +181,10 @@ class CustomerService {
     }
 
     subscribeEvents = async (payload) => {
-        payload = JSON.parse(payload);
+        payload = await JSON.parse(payload);
         const { event, data } = payload;
+        console.log("Event received", event);
+        console.log("Data received", data);
         const { _id, product, order, quantity } = data;
         switch (event) {
             case 'ADD_TO_CART':

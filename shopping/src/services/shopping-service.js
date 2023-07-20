@@ -94,6 +94,7 @@ class ShoppingService {
                     event: event,
                     data: {
                         _id: id,
+                        product: " ",
                         order: order
                     }
                 }

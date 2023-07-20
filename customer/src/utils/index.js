@@ -23,7 +23,7 @@ generateToken = async (payload) => {
 verifyToken = async (req) => {
     try {
         const signature = req.get("Authorization");
-        const payload = jwt.verify(toString(signature).split(" ")[1], jwtSecret);
+        const payload = jwt.verify(signature.split(" ")[1], jwtSecret);
         req.user = payload;
         return true;
     }
