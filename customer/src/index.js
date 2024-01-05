@@ -6,7 +6,7 @@ const { createChannel } = require('./utils/index')
 
 const StartServer = async () => {
 
-    const app = express();
+    const app = express();// express app instance created
 
     await connect();
 
