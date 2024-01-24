@@ -51,7 +51,8 @@ module.exports = (app, channel) => {
 
     app.post('/address', validateToken, async (req, res) => {
         try {
-            const { _id, street, postalcode, city, country } = req.body
+            const { street, postalcode, city, country } = req.body;
+            const _id = req.user.id;
             if (!_id || !street || !postalcode || !city || !country) {
                 res.status(400).json({ message: "Customer id, street, postalcode, city and country are required" });
                 return
@@ -70,7 +71,7 @@ module.exports = (app, channel) => {
 
     app.get('/profile', validateToken, async (req, res) => {
         try {
-            const { _id } = req.body
+            const _id = req.user.id;
             if (!_id) {
                 res.status(400).json({ message: "Customer id is required" });
                 return
@@ -89,7 +90,7 @@ module.exports = (app, channel) => {
 
     app.get('/shoppingdetails', validateToken, async (req, res) => {
         try {
-            const { _id } = req.body
+            const _id = req.user.id;
             if (!_id) {
                 res.status(400).json({ message: "Customer id is required" });
                 return
@@ -109,7 +110,7 @@ module.exports = (app, channel) => {
 
     app.get('/wishlist', validateToken, async (req, res) => {
         try {
-            const { _id } = req.body
+            const _id = req.user.id;
             if (!_id) {
                 res.status(400).json({ message: "Customer id is required" });
                 return

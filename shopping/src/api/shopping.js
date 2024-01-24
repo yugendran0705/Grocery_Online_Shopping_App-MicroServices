@@ -14,7 +14,8 @@ module.exports = async (app, channel) => {
     });
     app.post('/order', validateToken, async (req, res) => {
         try {
-            const { _id, txn_id } = req.body
+            const { txn_id } = req.body
+            const _id = req.user.id
             if (!_id || !txn_id) {
                 res.status(400).json({ message: "Customer id and txn id are required" });
                 return
@@ -39,7 +40,7 @@ module.exports = async (app, channel) => {
 
     app.get('/orders', validateToken, async (req, res) => {
         try {
-            const { _id } = req.body
+            const _id = req.user.id
             if (!_id) {
                 res.status(400).json({ message: "Customer id is required" });
                 return
@@ -57,7 +58,7 @@ module.exports = async (app, channel) => {
     });
     app.get('/cart', validateToken, async (req, res, next) => {
         try {
-            const { _id } = req.body
+            const _id = req.user.id
             if (!_id) {
                 res.status(400).json({ message: "Customer id is required" });
                 return

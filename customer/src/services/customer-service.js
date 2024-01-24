@@ -16,7 +16,7 @@ class CustomerService {
             if (customer) {
                 const validPassword = await validatePassword(password, customer.password, customer.salt);
                 if (validPassword) {
-                    const token = await generateToken({ email: customer.email, _id: customer._id });
+                    const token = await generateToken({ email: customer.email, id: customer._id });
                     return formatData({ id: customer._id, token });
                 }
             }

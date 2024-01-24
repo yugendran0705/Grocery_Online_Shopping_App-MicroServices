@@ -99,7 +99,8 @@ module.exports = (app, channel) => {
 
     app.put('/wishlist', validateToken, async (req, res) => {
         try {
-            const { customerId, productId } = req.body;
+            const { productId } = req.body;
+            const customerId = req.user.id;
             if (!customerId || !productId) {
                 res.status(400).json({ message: "Customer id and product id are required" });
                 return
@@ -121,7 +122,8 @@ module.exports = (app, channel) => {
 
     app.put('/cart', validateToken, async (req, res) => {
         try {
-            const { customerId, productId, quantity } = req.body;
+            const { productId, quantity } = req.body;
+            const customerId = req.user.id;
             if (!customerId || !productId || !quantity) {
                 res.status(400).json({ message: "Customer id, product id and quantity are required" });
                 return
@@ -145,7 +147,7 @@ module.exports = (app, channel) => {
 
     app.delete('/wishlist/:id', validateToken, async (req, res) => {
         try {
-            const { customerId } = req.body;
+            const customerId = req.user.id; 
             const { id } = req.params;
             if (!customerId || !id) {
                 res.status(400).json({ message: "Customer id and product id are required" });
@@ -167,7 +169,7 @@ module.exports = (app, channel) => {
     });
     app.delete('/cart/:id', validateToken, async (req, res, next) => {
         try {
-            const { customerId } = req.body;
+            const customerId = req.user.id;
             const { id } = req.params;
             if (!customerId || !id) {
                 res.status(400).json({ message: "Customer id and product id are required" });
